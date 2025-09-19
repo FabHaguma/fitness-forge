@@ -1,0 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+:root {
+  font-family: 'Orbitron', monospace;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color: #00ffff;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+  color: #00ffff;
+  font-family: 'Orbitron', monospace;
+}
+
+#app {
+  min-height: 100vh;
+  background: transparent;
+}
+
+/* Cyberpunk scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(26, 26, 26, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ff0080, #00ffff);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ff0080, #00ffff, #ffea00);
+}
+
+/* Global animations */
+@keyframes glow {
+  0%, 100% {
+    text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff, 0 0 15px #00ffff;
+  }
+  50% {
+    text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(255, 0, 128, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 0, 128, 0.8), 0 0 30px rgba(255, 0, 128, 0.6);
+  }
+}
+
+/* Utility classes */
+.neon-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+.cyber-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Vuetify overrides for cyberpunk theme */
+.v-application {
+  background: transparent !important;
+}
+
+.v-card {
+  background: rgba(26, 26, 26, 0.9) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 0, 128, 0.3) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 0 20px rgba(255, 0, 128, 0.1) !important;
+}
+
+.v-btn {
+  border-radius: 8px !important;
+  font-family: 'Orbitron', monospace !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  transition: all 0.3s ease !important;
+}
+
+.v-btn:hover {
+  box-shadow: 0 0 15px rgba(255, 0, 128, 0.5) !important;
+  transform: translateY(-2px) !important;
+}
+
+.v-text-field .v-field {
+  background: rgba(26, 26, 26, 0.8) !important;
+  border: 1px solid rgba(0, 255, 255, 0.3) !important;
+  border-radius: 8px !important;
+}
+
+.v-text-field .v-field:focus {
+  border-color: #00ffff !important;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.5) !important;
+}
