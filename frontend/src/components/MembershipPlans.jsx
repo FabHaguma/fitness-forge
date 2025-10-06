@@ -13,8 +13,6 @@ import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import TextField from '@mui/material/TextField'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -23,84 +21,66 @@ import Snackbar from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
 import { motion } from 'framer-motion'
 
-export default function Classes() {
-  const [classes, setClasses] = useState([])
-  const [trainers, setTrainers] = useState([])
+export default function MembershipPlans() {
+  const [plans, setPlans] = useState([])
   const [loading, setLoading] = useState(false)
   const [openDialog, setOpenDialog] = useState(false)
-  const [editingClass, setEditingClass] = useState(null)
-  const [form, setForm] = useState({ name: '', description: '', trainerId: '' })
+  const [editingPlan, setEditingPlan] = useState(null)
+  const [form, setForm] = useState({ name: '', price: '', duration: '' })
   const [snack, setSnack] = useState({ open: false, message: '', severity: 'info' })
 
-  const API_BASE = 'http://localhost:8080/class-sessions'
-  const TRAINERS_API = 'http://localhost:8080/trainers'
+  const API_BASE = 'http://localhost:8080/membership-plans'
 
   const showSnack = (message, severity = 'success') => {
     setSnack({ open: true, message, severity })
   }
 
-  const fetchClasses = async () => {
+  const fetchPlans = async () => {
     setLoading(true)
     try {
       const res = await fetch(API_BASE)
       if (!res.ok) throw new Error('Network error')
       const data = await res.json()
-      setClasses(data)
+      setPlans(data)
     } catch (err) {
       console.warn('Backend not available, using mock data', err)
-      setClasses([
-        { id: 1, name: 'Yoga', description: 'Relaxing yoga session', trainer: { name: 'Alice' } },
-        { id: 2, name: 'Zumba', description: 'Energetic dance workout', trainer: { name: 'Bob' } }
+      setPlans([
+        { id: 1, name: 'Monthly', price: 50, duration: '1 month' },
+        { id: 2, name: 'Quarterly', price: 120, duration: '3 months' }
       ])
     } finally {
       setLoading(false)
     }
   }
 
-  const fetchTrainers = async () => {
-    try {
-      const res = await fetch(TRAINERS_API)
-      if (!res.ok) throw new Error('Network error')
-      const data = await res.json()
-      setTrainers(data)
-    } catch (err) {
-      console.warn('Backend not available, using mock trainers', err)
-      setTrainers([
-        { id: 1, name: 'Alice Johnson' },
-        { id: 2, name: 'Bob Smith' }
-      ])
-    }
-  }
-
   useEffect(() => {
-    fetchClasses()
-    fetchTrainers()
+    fetchPlans()
   }, [])
 
   const handleSave = async () => {
     try {
-      const method = editingClass ? 'PUT' : 'POST'
-      const url = editingClass ? `${API_BASE}/${editingClass.id}` : API_BASE
-      const body = { ...form, trainer: { id: parseInt(form.trainerId) } }
+      const method = editingPlan ? 'PUT' : 'POST'
+      const url = editingPlan ? `${API_BASE}/${editingPlan.id}` : API_BASE
+      const body = { ...form, price: parseFloat(form.price) }
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       })
       if (!res.ok) throw new Error('Save failed')
-      showSnack(editingClass ? 'Class updated' : 'Class added')
+      showSnack(editingPlan ? 'Plan updated' : 'Plan added')
       setOpenDialog(false)
-      setForm({ name: '', description: '', trainerId: '' })
-      setEditingClass(null)
-      fetchClasses()
+      setForm({ name: '', price: '', duration: '' })
+      setEditingPlan(null)
+      fetchPlans()
     } catch (err) {
-      showSnack('Error saving class', 'error')
+      showSnack('Error saving plan', 'error')
     }
   }
 
-  const handleEdit = (cls) => {
-    setEditingClass(cls)
-    setForm({ name: cls.name, description: cls.description || '', trainerId: cls.trainer?.id || '' })
+  const handleEdit = (plan) => {
+    setEditingPlan(plan)
+    setForm({ name: plan.name, price: plan.price, duration: plan.duration })
     setOpenDialog(true)
   }
 
@@ -108,10 +88,10 @@ export default function Classes() {
     try {
       const res = await fetch(`${API_BASE}/${id}`, { method: 'DELETE' })
       if (!res.ok) throw new Error('Delete failed')
-      showSnack('Class deleted')
-      fetchClasses()
+      showSnack('Plan deleted')
+      fetchPlans()
     } catch (err) {
-      showSnack('Error deleting class', 'error')
+      showSnack('Error deleting plan', 'error')
     }
   }
 
@@ -123,14 +103,14 @@ export default function Classes() {
     >
       <Card sx={{ mb: 2, background: 'rgba(26,26,26,0.9)', boxShadow: '0 0 20px #00ffff' }}>
         <CardContent>
-          <Typography variant="h5" color="secondary" sx={{ textShadow: '0 0 10px #00ffff' }}>Class Management</Typography>
+          <Typography variant="h5" color="secondary" sx={{ textShadow: '0 0 10px #00ffff' }}>Membership Plans</Typography>
           <Button
             variant="contained"
             color="primary"
             onClick={() => setOpenDialog(true)}
             sx={{ mt: 1, boxShadow: '0 0 10px #ff0080' }}
           >
-            Add Class
+            Add Plan
           </Button>
         </CardContent>
       </Card>
@@ -141,22 +121,22 @@ export default function Classes() {
             <TableHead>
               <TableRow>
                 <TableCell sx={{ color: '#00ffff' }}>Name</TableCell>
-                <TableCell sx={{ color: '#00ffff' }}>Description</TableCell>
-                <TableCell sx={{ color: '#00ffff' }}>Trainer</TableCell>
+                <TableCell sx={{ color: '#00ffff' }}>Price</TableCell>
+                <TableCell sx={{ color: '#00ffff' }}>Duration</TableCell>
                 <TableCell sx={{ color: '#00ffff' }}>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {classes.map((cls) => (
-                <TableRow key={cls.id}>
-                  <TableCell sx={{ color: '#ffffff' }}>{cls.name}</TableCell>
-                  <TableCell sx={{ color: '#ffffff' }}>{cls.description}</TableCell>
-                  <TableCell sx={{ color: '#ffffff' }}>{cls.trainer?.name}</TableCell>
+              {plans.map((plan) => (
+                <TableRow key={plan.id}>
+                  <TableCell sx={{ color: '#ffffff' }}>{plan.name}</TableCell>
+                  <TableCell sx={{ color: '#ffffff' }}>${plan.price}</TableCell>
+                  <TableCell sx={{ color: '#ffffff' }}>{plan.duration}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => handleEdit(cls)} sx={{ color: '#00ffff' }}>
+                    <IconButton onClick={() => handleEdit(plan)} sx={{ color: '#00ffff' }}>
                       <EditIcon />
                     </IconButton>
-                    <IconButton onClick={() => handleDelete(cls.id)} sx={{ color: '#ff0080' }}>
+                    <IconButton onClick={() => handleDelete(plan.id)} sx={{ color: '#ff0080' }}>
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>
@@ -168,7 +148,7 @@ export default function Classes() {
       </Card>
 
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)} PaperProps={{ sx: { backgroundColor: '#1a1a1a', color: '#ffffff' } }}>
-        <DialogTitle sx={{ color: '#00ffff' }}>{editingClass ? 'Edit Class' : 'Add Class'}</DialogTitle>
+        <DialogTitle sx={{ color: '#00ffff' }}>{editingPlan ? 'Edit Plan' : 'Add Plan'}</DialogTitle>
         <DialogContent>
           <TextField
             fullWidth
@@ -179,21 +159,19 @@ export default function Classes() {
           />
           <TextField
             fullWidth
-            label="Description"
-            value={form.description}
-            onChange={(e) => setForm({ ...form, description: e.target.value })}
+            label="Price"
+            type="number"
+            value={form.price}
+            onChange={(e) => setForm({ ...form, price: e.target.value })}
             sx={{ mt: 2, '& .MuiInputLabel-root': { color: '#00ffff' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#00ffff' } } }}
           />
-          <Select
+          <TextField
             fullWidth
-            value={form.trainerId}
-            onChange={(e) => setForm({ ...form, trainerId: e.target.value })}
-            sx={{ mt: 2, color: '#ffffff', '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#00ffff' } } }}
-          >
-            {trainers.map((trainer) => (
-              <MenuItem key={trainer.id} value={trainer.id}>{trainer.name}</MenuItem>
-            ))}
-          </Select>
+            label="Duration"
+            value={form.duration}
+            onChange={(e) => setForm({ ...form, duration: e.target.value })}
+            sx={{ mt: 2, '& .MuiInputLabel-root': { color: '#00ffff' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#00ffff' } } }}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)} sx={{ color: '#ff0080' }}>Cancel</Button>

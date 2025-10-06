@@ -17,12 +17,14 @@ import PeopleIcon from '@mui/icons-material/People'
 import EventIcon from '@mui/icons-material/Event'
 import BookOnlineIcon from '@mui/icons-material/BookOnline'
 import BarChartIcon from '@mui/icons-material/BarChart'
+import CreditCardIcon from '@mui/icons-material/CreditCard'
 
 import Dashboard from './components/Dashboard'
 import Members from './components/Members'
 import Classes from './components/Classes'
 import Bookings from './components/Bookings'
 import Reports from './components/Reports'
+import MembershipPlans from './components/MembershipPlans'
 
 const theme = createTheme({
   palette: {
@@ -40,6 +42,7 @@ export default function App() {
   const menu = [
     { title: 'Dashboard', path: '/', icon: <DashboardIcon /> },
     { title: 'Members', path: '/members', icon: <PeopleIcon /> },
+    { title: 'Membership Plans', path: '/membership-plans', icon: <CreditCardIcon /> },
     { title: 'Classes', path: '/classes', icon: <EventIcon /> },
     { title: 'Bookings', path: '/bookings', icon: <BookOnlineIcon /> },
     { title: 'Reports', path: '/reports', icon: <BarChartIcon /> }
@@ -75,6 +78,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/members" element={<Members />} />
+            <Route path="/membership-plans" element={<MembershipPlans />} />
             <Route path="/classes" element={<Classes />} />
             <Route path="/bookings" element={<Bookings />} />
             <Route path="/reports" element={<Reports />} />
