@@ -1,39 +1,35 @@
 package com.gymmis.service;
 
+import com.gymmis.dao.MemberDao;
 import com.gymmis.entity.Member;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import java.sql.SQLException;
 import java.util.List;
 
+@ApplicationScoped
 public class MemberService {
 
-    @PersistenceContext
-    EntityManager entityManager;
+    @Inject
+    MemberDao memberDao;
 
-    public List<Member> findAll() {
-        return entityManager.createQuery("SELECT m FROM Member m", Member.class).getResultList();
+    public List<Member> findAll() throws SQLException {
+        return memberDao.findAll();
     }
 
-    public Member findById(Long id) {
-        return entityManager.find(Member.class, id);
-    }
-
-    @Transactional
-    public Member save(Member member) {
-        if (member.getId() == null) {
-            entityManager.persist(member);
-            return member;
-        } else {
-            return entityManager.merge(member);
-        }
+    public Member findById(Long id) throws SQLException {
+        return memberDao.findById(id);
     }
 
     @Transactional
-    public void delete(Long id) {
-        Member member = findById(id);
-        if (member != null) {
-            entityManager.remove(member);
-        }
+    public Member save(Member member) throws SQLException {
+        memberDao.save(member);
+        return member;
+    }
+
+    @Transactional
+    public void delete(Long id) throws SQLException {
+        memberDao.delete(id);
     }
 }

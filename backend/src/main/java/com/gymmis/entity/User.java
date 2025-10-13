@@ -1,18 +1,10 @@
 package com.gymmis.entity;
 
-import jakarta.persistence.*;
-
-@Entity
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String username;
     private String password; // In production, this should be hashed
     private String role; // admin or member
-
-    @OneToOne
     private Member member; // Link to member if role is member
 
     // Getters and setters

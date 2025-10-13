@@ -1,19 +1,9 @@
 package com.gymmis.entity;
 
-import jakarta.persistence.*;
-
-@Entity
 public class Booking {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
     private Member member;
-
-    @ManyToOne
     private ClassSession classSession;
-
     private String status; // booked, cancelled
 
     // Getters and setters

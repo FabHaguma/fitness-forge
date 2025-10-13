@@ -1,18 +1,10 @@
 package com.gymmis.entity;
 
-import jakarta.persistence.*;
-
-@Entity
 public class ClassSession {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
     private String type; // Yoga, Zumba, Strength, etc.
     private String schedule;
-
-    @ManyToOne
     private Trainer trainer;
 
     // Getters and setters

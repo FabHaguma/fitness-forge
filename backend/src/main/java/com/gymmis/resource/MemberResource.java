@@ -1,12 +1,12 @@
 package com.gymmis.resource;
 
 import com.gymmis.entity.Member;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
+import com.gymmis.service.MemberService;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.sql.SQLException;
 import java.util.List;
 
 @Path("/members")
@@ -14,56 +14,66 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 public class MemberResource {
 
-    @PersistenceContext
-    EntityManager entityManager;
+    @Inject
+    MemberService memberService;
 
     @GET
     public List<Member> getAllMembers() {
-        return entityManager.createQuery("SELECT m FROM Member m", Member.class).getResultList();
+        try {
+            return memberService.findAll();
+        } catch (SQLException e) {
+            throw new WebApplicationException("Database error", 500);
+        }
     }
 
     @GET
     @Path("/{id}")
     public Member getMember(@PathParam("id") Long id) {
-        Member member = entityManager.find(Member.class, id);
-        if (member == null) {
-            throw new WebApplicationException("Member not found", 404);
+        try {
+            Member member = memberService.findById(id);
+            if (member == null) {
+                throw new WebApplicationException("Member not found", 404);
+            }
+            return member;
+        } catch (SQLException e) {
+            throw new WebApplicationException("Database error", 500);
         }
-        return member;
     }
 
     @POST
-    @Transactional
     public Response createMember(Member member) {
-        entityManager.persist(member);
-        return Response.status(Response.Status.CREATED).entity(member).build();
+        try {
+            memberService.save(member);
+            return Response.status(Response.Status.CREATED).entity(member).build();
+        } catch (SQLException e) {
+            throw new WebApplicationException("Database error", 500);
+        }
     }
 
     @PUT
     @Path("/{id}")
-    @Transactional
     public Response updateMember(@PathParam("id") Long id, Member updatedMember) {
-        Member member = entityManager.find(Member.class, id);
-        if (member == null) {
-            throw new WebApplicationException("Member not found", 404);
+        try {
+            Member member = memberService.findById(id);
+            if (member == null) {
+                throw new WebApplicationException("Member not found", 404);
+            }
+            updatedMember.setId(id);
+            memberService.save(updatedMember);
+            return Response.ok(updatedMember).build();
+        } catch (SQLException e) {
+            throw new WebApplicationException("Database error", 500);
         }
-        member.setName(updatedMember.getName());
-        member.setAge(updatedMember.getAge());
-        member.setGender(updatedMember.getGender());
-        member.setContact(updatedMember.getContact());
-        entityManager.merge(member);
-        return Response.ok(member).build();
     }
 
     @DELETE
     @Path("/{id}")
-    @Transactional
     public Response deleteMember(@PathParam("id") Long id) {
-        Member member = entityManager.find(Member.class, id);
-        if (member == null) {
-            throw new WebApplicationException("Member not found", 404);
+        try {
+            memberService.delete(id);
+            return Response.noContent().build();
+        } catch (SQLException e) {
+            throw new WebApplicationException("Database error", 500);
         }
-        entityManager.remove(member);
-        return Response.noContent().build();
     }
 }

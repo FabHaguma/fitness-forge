@@ -1,28 +1,10 @@
 package com.gymmis.entity;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-
-@Entity
 public class Member {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotBlank(message = "Name is required")
-    @Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters")
     private String name;
-
-    @NotNull(message = "Age is required")
-    @Min(value = 13, message = "Age must be at least 13")
-    @Max(value = 120, message = "Age must be less than 120")
     private Integer age;
-
-    @NotBlank(message = "Gender is required")
     private String gender;
-
-    @NotBlank(message = "Contact information is required")
-    @Email(message = "Contact must be a valid email address")
     private String contact;
 
     // Getters and setters

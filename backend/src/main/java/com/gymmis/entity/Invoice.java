@@ -1,19 +1,9 @@
 package com.gymmis.entity;
 
-import jakarta.persistence.*;
-
-@Entity
 public class Invoice {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
     private Member member;
-
-    @ManyToOne
     private MembershipPlan membershipPlan;
-
     private Double amount;
     private String invoiceDate;
 
